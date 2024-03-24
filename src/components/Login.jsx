@@ -2,60 +2,28 @@ import { useRef } from 'react';
 import { useState } from 'react';
 
 export default function Login() {
-  // const [enteredEmail, setEnteredEmail] = useState('');
-  // const [enteredPassword, setEnteredPassword] = useState('');
+  const [emailIsInvalid, setEmailIsInvalid] = useState(false);
 
-  const [enteredValue, setEnteredValue] = useState({ email: '', password: '' });
-
-  // const emailRef = useRef();
-  // const passwordRef = useRef();
-  // const [emailIsInvalid, setEmailIsInvalid] = useState(false);
-  const [didEdit, setDidEdit] = useState({ email: false, password: false });
-
-  // function handleEmailChange() {
-  //   const emailValue = emailRef.current.value;
-
-  //   if (didEdit.email) {
-  //     setEmailIsInvalid(!emailValue.includes('@'));
-  //   }
-  // }
-
-  const emailIsInvalid = didEdit.email && !enteredValue.email.includes('@');
-
-  function handleInputBlur(e) {
-    setDidEdit((prevEdit) => ({
-      ...prevEdit,
-      [e.target.name]: true,
-    }));
-  }
+  const email = useRef();
+  const password = useRef();
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (emailIsInvalid) return;
+    const enteredEmail = email.current.value;
+    const enteredPassword = password.current.value;
 
-    console.log(enteredValue);
+    const emailIsValid = enteredEmail.includes('@');
+
+    if (!emailIsValid) {
+      setEmailIsInvalid(true);
+      return;
+    }
+
+    setEmailIsInvalid(false);
+
+    console.log('Sending HTTP request...');
   }
-
-  function handleInputChange(e) {
-    setEnteredValue((prevValue) => ({
-      ...prevValue,
-      [e.target.name]: e.target.value,
-    }));
-
-    setDidEdit((prevEdit) => ({
-      ...prevEdit,
-      [e.target.name]: false,
-    }));
-  }
-
-  // function handleEmailChange(e) {
-  //   setEnteredEmail(e.target.value);
-  // }
-
-  // function handlePasswordChange(e) {
-  //   setEnteredPassword(e.target.value);
-  // }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -68,10 +36,7 @@ export default function Login() {
             id='email'
             type='email'
             name='email'
-            // ref={emailRef}
-            onBlur={handleInputBlur}
-            onChange={handleInputChange}
-            value={enteredValue.email}
+            ref={email}
           />
           <div className='control-error'>
             {emailIsInvalid && <p>Please enter a valid email address</p>}
@@ -84,10 +49,7 @@ export default function Login() {
             id='password'
             type='password'
             name='password'
-            // ref={passwordRef}
-            onBlur={handleInputBlur}
-            onChange={handleInputChange}
-            value={enteredValue.password}
+            ref={password}
           />
         </div>
       </div>
